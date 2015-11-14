@@ -77,7 +77,8 @@ class IMDB_Scraper
 
 	# goes to cast member's bio page and returns cast member's dob
 	# @param url: the directory path for the actor's bio page
-	# @return: an array in the format [day, month, year]
+	# @return: an array in the format [day, month, year], or false if there isn't
+	# birthday listed
 	def get_cast_member_dob(url)
 		begin
 			# gets date of birth container
