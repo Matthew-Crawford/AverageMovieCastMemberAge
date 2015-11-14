@@ -1,10 +1,10 @@
 # IMDB_Scraper.rb
-# A web scraping program that searches IMDB for movies
-# currently in theaters and retrieves the age of each
+# A web scraping program that searches IMDB for movies currently in theaters and retrieves the age of each
 # cast member for each movie
 
 require 'mechanize'
 require 'ruby-progressbar'
+require 'Date'
 require_relative 'cast_member'
 require_relative 'movie'
 
@@ -23,7 +23,7 @@ class IMDB_Scraper
 		@scraper = scraper
 
 		# Sleeps for .2 seconds every time the scraper does an action
-		@scraper.history_added = Proc.new { sleep 0.2 }
+		# @scraper.history_added = Proc.new { sleep 0.2 }
 	end	
 
 
@@ -43,33 +43,37 @@ class IMDB_Scraper
 		return movie_links
 	end
 
-	# goes to each movie page and instantiates a Cast_Member object for each
-	# cast member
-	# @param links: the urls of all movie pages currently shown in theaters
+	# creates a thread for each movie currently showing in theaters 
+	# @param movies: the urls of all movie pages currently shown in theaters
 	# @return: a list of movies with all valid cast_members in it's cast_list attribute
-	def get_cast_list(links)
-		movie_list = []
-		links.each do |movie|
-			movie_page = scraper.get(BASE_URL + movie.movie_link)
-			full_cast_page = movie_page.link_with(text: 'See full cast').click
-			puts
-			puts movie.title
-			puts
-			full_cast_page.search('td.itemprop').each do |cast_list|
-				cast_member_link = cast_list.css('a')[0]
-				cast_member_name = cast_member_link.text
-				cast_member_dob = get_cast_member_dob(BASE_URL + cast_member_link.attributes['href'].value)
-				if(cast_member_dob != false)
-					cast_member = Cast_Member.new(cast_member_name, cast_member_link, 
-						cast_member_dob[2], cast_member_dob[1], cast_member_dob[0])
-					movie.cast_list << cast_member
-					movie_list << movie
-					puts cast_member_name
-				end
+	def get_cast_list_for_all_movies(movies)
+		movie_list_threads = []
+		movies.each do |movie|
+			movie_list_threads << Thread.new {get_cast_list(movie)}
+		end
+		movie_list_threads.each { |thread| thread.join }
+		return movie_list_threads
+	end	
+
+	# gets the cast members and their date of birth's for each movie
+	# @param movie: the cast members' movie
+	# @return: the movie with the full cast member list
+	def get_cast_list(movie)
+		movie_page = scraper.get(BASE_URL + movie.movie_link)
+		full_cast_page = movie_page.link_with(text: 'See full cast').click
+		full_cast_page.search('td.itemprop').each do |cast_list|
+			cast_member_link = cast_list.css('a')[0]
+			cast_member_name = cast_member_link.text
+			cast_member_dob = get_cast_member_dob(BASE_URL + cast_member_link.attributes['href'].value)
+			if(cast_member_dob != false)
+				date_of_birth = DateTime.new(cast_member_dob[2].to_i, cast_member_dob[0].to_i, cast_member_dob[1].to_i)
+				cast_member = Cast_Member.new(cast_member_name, cast_member_link, date_of_birth)
+				movie.cast_list << cast_member
+				puts cast_member_name
 			end
 		end
-		return movie_list
-	end	
+		return movie
+	end
 
 	# goes to cast member's bio page and returns cast member's dob
 	# @param url: the directory path for the actor's bio page
@@ -80,20 +84,17 @@ class IMDB_Scraper
 			cast_member_page = scraper.get(url)
 			birthday_container = cast_member_page.search('#name-born-info')
 
-			# formats the date of birth in 'd mm yyyy'
+			# formats the date of birth in 'mm d yyyy'
 			birthday = birthday_container.at('time').text.strip
 			birthday = birthday.gsub(/\r/, "")
 			birthday = birthday.gsub(/\n/, "")
 			birthday = birthday.split(" ")
 			birthday[1] = birthday[1].gsub(',', '')
-
+			birthday[0] = Date::MONTHNAMES.index(birthday[0]) 
 			return birthday
-
 		# catches if there is no date of birth for a given actor
 		rescue NoMethodError
-			puts 'This dude/dudette needs a better profile'
 			return false
 		end
 	end
-
 end
