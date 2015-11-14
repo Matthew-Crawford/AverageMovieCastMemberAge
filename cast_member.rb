@@ -1,43 +1,50 @@
-require 'Date'
-class Cast_Member
-	attr_accessor :name, :link, :dob_day, :dob_month, :dob_year
+# cast_member.rb
+# provides a way to create cast_members and calculate the cast_member's age
 
-	def initialize(name, link, dob_year=0, dob_month=0, dob_day=0)
+class Cast_Member
+	attr_accessor :name, :link, :date_of_birth
+
+	# initialize a Cast_Member object
+	# @param name: name of the actor
+	# @param link: url link of the actor's page
+	# @param date_of_birth: a DateTime object representing the cast member's 
+	# date of birth
+	def initialize(name, link, date_of_birth)
 		@name = name
 		@link = link
-		@dob_day = dob_day
-		@dob_month = Date::MONTHNAMES.index(dob_month) 
-		@dob_year = dob_year
+		@date_of_birth = date_of_birth
 	end
 
 	# calculates age based on date of birth and the current date
 	# @return: the current age of the cast_member
 	def calculate_age
 		now = DateTime.now
-		dob = DateTime.new(dob_year.to_i, dob_month.to_i, dob_day.to_i)
-		age = now.year - dob.year
+		age = now.year - date_of_birth.year
 
 		# subtracts 1 from the age if the number of days in the current year
 		# is less than the number of days before the cast members' birthday
-		if now.yday < dob.yday
+		if now.yday < date_of_birth.yday
 			age -= 1
 		end
 		return age
 	end	
 
-	def display_age
-		puts calculate_age
+
+	def display_age(expected_age)
+		puts "Expected age: #{expected_age}, Recieved age #{calculate_age}"
 	end
 end
 
 # simple unit test to test correct age
 def test_calculate_age
 
-	cast_member = Cast_Member.new(1994, "November", 14, "storm of war")
+	matthew_birth = DateTime.new(1994,12,15)
+	cast_member = Cast_Member.new("Matthew", "", matthew_birth)
 	cast_member.calculate_age
-	cast_member.display_age
+	cast_member.display_age(20)
 
-	cast_member = Cast_Member.new(1994, "January", 26, "Life of Matthew")
+	dan_birth = DateTime.new(1994, 1, 26)
+	cast_member = Cast_Member.new("Dan", "", dan_birth)
 	cast_member.calculate_age
-	cast_member.display_age
+	cast_member.display_age(21)
 end
