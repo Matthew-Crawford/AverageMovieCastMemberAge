@@ -23,7 +23,7 @@ class IMDB_Scraper
 		@scraper = scraper
 
 		# Sleeps for .2 seconds every time the scraper does an action
-		# @scraper.history_added = Proc.new { sleep 0.2 }
+		 @scraper.history_added = Proc.new { sleep 0.5 }
 	end	
 
 
