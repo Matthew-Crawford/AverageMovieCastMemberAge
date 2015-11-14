@@ -1,10 +1,11 @@
 class Movie
 
-	attr_accessor :title, :movie_link, :cast_list
+	attr_accessor :title, :movie_link, :average_age, :cast_list
 
-	def initialize(title, movie_link, cast_list=[])
+	def initialize(title, movie_link, average_age, cast_list=[])
 		@title = title
 		@movie_link = movie_link
+		@average_age = average_age
 		@cast_list = cast_list
 	end
 end

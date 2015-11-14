@@ -20,7 +20,7 @@ class Cast_Member
 		# subtracts 1 from the age if the number of days in the current year
 		# is less than the number of days before the cast members' birthday
 		if now.yday < dob.yday
-			age--
+			age -= 1
 		end
 		return age
 	end	
