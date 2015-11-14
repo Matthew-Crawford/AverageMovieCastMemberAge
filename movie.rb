@@ -1,7 +1,14 @@
-class Movie
+# movie.rb
+# holds the information about a currently shown movie
 
+class Movie
 	attr_accessor :title, :movie_link, :average_age, :cast_list
 
+	# initialize the Movie object
+	# @param title: the movie title
+	# @param movie_link: the directory path of the movie 
+	# @param average_age: average age of the cast
+	# @param cast_list: a list of Cast_Member objects
 	def initialize(title, movie_link, average_age=0, cast_list=[])
 		@title = title
 		@movie_link = movie_link
