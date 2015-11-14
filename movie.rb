@@ -23,6 +23,11 @@ class Movie
 		cast_list.each do |cast_member|
 			sum += cast_member.calculate_age
 		end
-		return sum/cast_list.count
+		average_age = sum/cast_list.count
+		return average_age
+	end
+
+	def display_average_age
+		puts "Title: #{title}	Average Age: #{calculate_average_age}"
 	end
 end
