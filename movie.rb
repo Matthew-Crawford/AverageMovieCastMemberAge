@@ -23,8 +23,7 @@ class Movie
 		cast_list.each do |cast_member|
 			sum += cast_member.calculate_age
 		end
-		average_age = sum/cast_list.count
-		return average_age
+		return sum/cast_list.count
 	end
 
 	def display_average_age
