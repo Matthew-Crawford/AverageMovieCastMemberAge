@@ -51,17 +51,24 @@ class IMDB_Scraper
 	def get_cast_list_for_each_movie(movies)
 		movie_list_threads = []
 		puts "Getting cast for all movies currently in theaters\n\n"
+		progress_bar = ProgressBar.create( :format => '%a %bᗧ%i %p%% %t',
+                    :progress_mark  => ' ',
+                    :remainder_mark => '･',
+                    :total 			=> movies.count)
 		movies.each do |movie|
-			movie_list_threads << Thread.new {get_cast_list(movie)}
+			movie_list_threads << Thread.new {get_cast_list(movie, progress_bar)}
 		end
-		movie_list_threads.each { |thread| thread.join }
+
+		movie_list_threads.each do |thread|
+			thread.join 
+		end
 		return movie_list_threads
 	end	
 
 	# gets the cast members and their date of birth's for each movie
 	# @param movie: the cast members' movie
 	# @return: the movie with the full cast member list
-	def get_cast_list(movie)
+	def get_cast_list(movie, progress_bar)
 		movie_page = scraper.get(BASE_URL + movie.movie_link)
 		full_cast_page = movie_page.link_with(text: 'See full cast').click
 		cast_member_count = 0
@@ -84,6 +91,7 @@ class IMDB_Scraper
 				movie.cast_list << cast_member
 			end
 		end
+		progress_bar.increment
 		return movie
 	end
 
