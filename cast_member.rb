@@ -29,7 +29,6 @@ class Cast_Member
 		return age
 	end	
 
-
 	def display_age(expected_age)
 		puts "Expected age: #{expected_age}, Recieved age #{calculate_age}"
 	end
