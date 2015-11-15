@@ -5,11 +5,13 @@
 require 'mechanize'
 require 'ruby-progressbar'
 require 'Date'
+require 'command_line_reporter'
 require_relative 'cast_member'
 require_relative 'movie'
 
 # A web scraper that scrapes IMDB  
 class IMDB_Scraper
+	include CommandLineReporter
 
 	attr_accessor :scraper
 
@@ -46,8 +48,9 @@ class IMDB_Scraper
 	# creates a thread for each movie currently showing in theaters 
 	# @param movies: the urls of all movie pages currently shown in theaters
 	# @return: a list of movies with all valid cast_members in it's cast_list attribute
-	def get_cast_list_for_all_movies(movies)
+	def get_cast_list_for_each_movie(movies)
 		movie_list_threads = []
+		puts "Getting cast for all movies currently in theaters\n\n"
 		movies.each do |movie|
 			movie_list_threads << Thread.new {get_cast_list(movie)}
 		end
@@ -61,15 +64,24 @@ class IMDB_Scraper
 	def get_cast_list(movie)
 		movie_page = scraper.get(BASE_URL + movie.movie_link)
 		full_cast_page = movie_page.link_with(text: 'See full cast').click
-		full_cast_page.search('td.itemprop').each do |cast_list|
-			cast_member_link = cast_list.css('a')[0]
+		cast_member_count = 0
+		cast_list = full_cast_page.search('td.itemprop')
+		cast_list.each do |cast_member_section|
+
+			# stops after 50 cast_members pages have been visited
+			cast_member_count += 1
+			if cast_member_count > 50
+				break
+			end
+
+			cast_member_link = cast_member_section.css('a')[0]
 			cast_member_name = cast_member_link.text
 			cast_member_dob = get_cast_member_dob(BASE_URL + cast_member_link.attributes['href'].value)
+
 			if(cast_member_dob != false)
 				date_of_birth = DateTime.new(cast_member_dob[2].to_i, cast_member_dob[0].to_i, cast_member_dob[1].to_i)
 				cast_member = Cast_Member.new(cast_member_name, cast_member_link, date_of_birth)
 				movie.cast_list << cast_member
-				puts cast_member_name
 			end
 		end
 		return movie
@@ -92,7 +104,9 @@ class IMDB_Scraper
 			birthday = birthday.split(" ")
 			birthday[1] = birthday[1].gsub(',', '')
 			birthday[0] = Date::MONTHNAMES.index(birthday[0]) 
+
 			return birthday
+
 		# catches if there is no date of birth for a given actor
 		rescue NoMethodError
 			return false
