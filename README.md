@@ -13,7 +13,7 @@ I started with average_cast_age_scrape.rb as a prototype and proof-of-concept fo
 2. Check to make sure Ruby is installed on your system by typing "ruby -v". 
 3. If ruby is not installed or up to date, go to https://www.ruby-lang.org/en/documentation/installation/ for instrunctions on how to install the latest version
 4. Clone the program files to your machine by typing "git clone https://github.com/MatthewCrawford0126/AverageCurrentMovieCastMemberAge.git"
-5. Navigate to the program directory and type "./run.sh" in the terminal to install the necessary gems and run the program
+5. Navigate to the program directory and type "sudo ./run.sh" in the terminal to install the necessary gems and run the program
 
 ## How to Run On Windows
 1. Go to http://rubyinstaller.org/downloads/ and install the latest version of Ruby
