@@ -1,3 +1,8 @@
+# DEPRECATED 
+# average_cast_age_scrape.rb
+# a proof-of-concept prototype to explore mechanize and 
+# scraping with ruby
+
 require 'mechanize'
 require 'ruby-progressbar'
 require_relative 'cast_member'
