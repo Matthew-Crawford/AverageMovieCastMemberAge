@@ -18,7 +18,7 @@ class Display
 		movies = imdb_scraper.get_cast_list_for_each_movie(imdb_scraper.get_movies_in_theaters)
 		puts
 
-		header :title => "Average Age of Cast of Movies Currently in Theaters",
+		header :title => "Average Age of the Cast Members of Movies Currently in Theaters",
 			 :width => 100, :bold => true
 
 		table(:border => true) do
