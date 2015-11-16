@@ -55,7 +55,7 @@ class IMDB_Scraper
 		movie_list_threads = []
 
 		puts "\nGetting cast for all movies currently in theaters\n\n"
-		progress_bar = ProgressBar.create( :format => '%a %bᗧ%i %p%% %t',
+		progress_bar = ProgressBar.create( :format => '%a %bᗧ%i %p%%',
                     :progress_mark  => ' ',
                     :remainder_mark => '･',
                     :total 			=> movies.count)
