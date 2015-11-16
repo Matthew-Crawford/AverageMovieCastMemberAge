@@ -33,13 +33,16 @@ class IMDB_Scraper
 	# @return: the urls of all movie pages currently shown in theaters
 	def get_movies_in_theaters
 		movie_links = []
+
 		scraper.get(IN_THEATERS) do |page|
 			movies_raw = page.search('td.overview-top')
+
 			movies_raw.each do |movie_link|
 				link = movie_link.search('h4').css('a')[0]
 				movie = Movie.new(link.attributes['title'].value, 
 					link.attributes['href'].value)
 				movie_links << movie
+
 			end
 		end
 		return movie_links
@@ -50,11 +53,13 @@ class IMDB_Scraper
 	# @return: a list of movies with all valid cast_members in it's cast_list attribute
 	def get_cast_list_for_each_movie(movies)
 		movie_list_threads = []
+
 		puts "\nGetting cast for all movies currently in theaters\n\n"
 		progress_bar = ProgressBar.create( :format => '%a %bᗧ%i %p%% %t',
                     :progress_mark  => ' ',
                     :remainder_mark => '･',
                     :total 			=> movies.count)
+
 		movies.each do |movie|
 			movie_list_threads << Thread.new {get_cast_list(movie, progress_bar)}
 		end
@@ -62,6 +67,7 @@ class IMDB_Scraper
 		movie_list_threads.each do |thread|
 			thread.join 
 		end
+
 		return movie_list_threads
 	end	
 
@@ -69,15 +75,16 @@ class IMDB_Scraper
 	# @param movie: the cast members' movie
 	# @return: the movie with the full cast member list
 	def get_cast_list(movie, progress_bar)
+		max_cast_members = 50
 		movie_page = scraper.get(BASE_URL + movie.movie_link)
 		full_cast_page = movie_page.link_with(text: 'See full cast').click
 		cast_member_count = 0
 		cast_list = full_cast_page.search('td.itemprop')
-		cast_list.each do |cast_member_section|
 
-			# stops after 50 cast_members pages have been visited
+		cast_list.each do |cast_member_section|
+			# stops after max_cast_members pages have been visited
 			cast_member_count += 1
-			if cast_member_count > 50
+			if cast_member_count > max_cast_members
 				break
 			end
 
