@@ -50,7 +50,7 @@ class IMDB_Scraper
 	# @return: a list of movies with all valid cast_members in it's cast_list attribute
 	def get_cast_list_for_each_movie(movies)
 		movie_list_threads = []
-		puts "Getting cast for all movies currently in theaters\n\n"
+		puts "\nGetting cast for all movies currently in theaters\n\n"
 		progress_bar = ProgressBar.create( :format => '%a %bᗧ%i %p%% %t',
                     :progress_mark  => ' ',
                     :remainder_mark => '･',
