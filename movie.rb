@@ -18,7 +18,7 @@ class Movie
 
 	# calculates the average age of the cast
 	# @return: the average age the cast, false if there are no cast members
-	# 		   with age an age	
+	#  with age an age	
 	def calculate_average_age
 		sum = 0
 		cast_list.each do |cast_member|
