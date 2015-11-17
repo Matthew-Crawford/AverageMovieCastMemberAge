@@ -23,7 +23,7 @@ Lists the movies showing in theaters and calculate the average age of the cast f
 I chose Ruby for this project because I've never tried it before and I figured now would be a great time to try it. I also knew web scraping would be necessary, and Ruby's Mechanize library is great for the task.
 ##### Object Oriented Design
 I started with average_cast_age_scrape.rb as a prototype and proof-of-concept for mechanize to scrape IMDB for movies currently showing in theaters. From there I seperated out sections of the script into Ruby methods and created IMDB_Scraper.rb. I also created movie.rb and cast_member.rb, which contains functionality to create Movie objects and Cast_Member objects, respectively. 
-## Threads
+##### Threads
 Scraping most of the cast members pages for 15-20 movies can result in very long run times as the IMDB_Scraper slogs through hundreds of pages. To alleviate this I assigned a thread for each movie, resulting many threads scraping IMDB in parallel. This reduces run times from several minutes to averaging under a minute.
 
 ## How to Run On OSX
