@@ -21,11 +21,10 @@ class IMDB_Scraper
 
 	def initialize(scraper = Mechanize.new)
 
-		# Instantiates a mechanize object which provides web scraping functionality
 		@scraper = scraper
 
-		# Sleeps for .5 seconds every time the scraper does an action
-		 @scraper.history_added = Proc.new { sleep 0.5 }
+		# sleeps for .4 seconds every time the scraper performs an action
+		 @scraper.history_added = Proc.new { sleep 0.4 }
 	end	
 
 
