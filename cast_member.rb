@@ -2,6 +2,7 @@
 # provides a way to create cast_members and calculate the cast_member's age
 
 class Cast_Member
+	
 	attr_accessor :name, :link, :date_of_birth
 
 	# initialize a Cast_Member object
