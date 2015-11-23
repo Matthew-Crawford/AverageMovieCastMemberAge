@@ -119,10 +119,14 @@ class IMDB_Scraper
 			birthday[1] = birthday[1].gsub(',', '')
 			birthday[0] = Date::MONTHNAMES.index(birthday[0]) 
 
+			test_dob = DateTime.new(birthday[2].to_i, birthday[0].to_i, birthday[1].to_i)
+
 			return birthday
 
 		# catches if there is no date of birth for a given actor
 		rescue NoMethodError
+			return false
+		rescue ArgumentError
 			return false
 		end
 	end
