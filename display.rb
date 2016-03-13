@@ -23,10 +23,12 @@ class Display
 
     table(:border => true) do
       sum_age = 0
+      sum_rating = 0
       count = 0
       row  do
-        column 'Title', :width => 30, :align => 'center'
+        column 'Title',       :width => 40, :align => 'center'
         column 'Average Age', :width => 25, :padding => 5
+        column 'Metascore',   :width => 25, :padding => 5
       end
 
       movies.each do |movie|
@@ -40,15 +42,19 @@ class Display
         row do
           column movie.title
           column movie.average_age
+          column movie.score
         end
         sum_age += movie.average_age
+        sum_rating += movie.score.to_i
         count += 1
       end 
 
       average_age_all_movies = sum_age/count
+      average_score = sum_rating/count
       row do
-        column 'Average Age of All Movies'
+        column 'Average Age and Score of All Movies'
         column average_age_all_movies
+        column average_score
       end
     end
   end

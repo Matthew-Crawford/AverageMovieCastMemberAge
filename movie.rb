@@ -2,7 +2,7 @@
 # holds the information about a currently shown movie
 
 class Movie
-  attr_accessor :title, :movie_link, :average_age, :cast_list
+  attr_accessor :title, :movie_link, :average_age, :cast_list, :score
 
   # initialize the Movie object
   # @param title: the movie title
