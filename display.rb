@@ -29,8 +29,7 @@ class Display
         column 'Average Age', :width => 25, :padding => 5
       end
 
-      movies.each do |movie_thread|
-        movie = movie_thread.value
+      movies.each do |movie|
         movie.average_age = movie.calculate_average_age
 
         # skips the movie if the minimum cast_member number is
