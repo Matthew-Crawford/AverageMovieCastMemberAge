@@ -20,11 +20,11 @@ class Cast_Member
   # @return: the current age of the cast_member
   def calculate_age
     now = DateTime.now
-    age = now.year - date_of_birth.year
+    age = now.year - @date_of_birth.year
 
     # subtracts 1 from the age if the number of days in the current year
     # is less than the number of days before the cast members' birthday
-    if now.yday < date_of_birth.yday
+    if now.yday < @date_of_birth.yday
       age -= 1
     end
     age

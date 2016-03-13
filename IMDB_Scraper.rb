@@ -19,12 +19,12 @@ class IMDB_Scraper
   BASE_URL = 'http://www.imdb.com/'
   IN_THEATERS = 'http://www.imdb.com/movies-in-theaters'
 
-  def initialize(scraper = Mechanize.new)
+  def initialize()
 
-    @scraper = scraper
+    @scraper = Mechanize.new
 
     # sleeps for .4 seconds every time the scraper performs an action
-     @scraper.history_added = Proc.new { sleep 0.4 }
+    @scraper.history_added = Proc.new { sleep 0.4 }
   end 
 
 
@@ -33,7 +33,7 @@ class IMDB_Scraper
   def get_movies_in_theaters
     movie_links = []
 
-    scraper.get(IN_THEATERS) do |page|
+    @scraper.get(IN_THEATERS) do |page|
       movies_raw = page.search('td.overview-top')
 
       movies_raw.each do |movie_link|
@@ -44,7 +44,7 @@ class IMDB_Scraper
 
       end
     end
-    return movie_links
+    movie_links
   end
 
   # creates a thread for each movie currently showing in theaters 
@@ -67,7 +67,7 @@ class IMDB_Scraper
       thread.join 
     end
 
-    return movie_list_threads
+    movie_list_threads
   end 
 
   # gets the cast members and their date of birth's for each movie
@@ -75,7 +75,7 @@ class IMDB_Scraper
   # @return: the movie with the full cast member list
   def get_cast_list(movie, progress_bar)
     max_cast_members = 50
-    movie_page = scraper.get(BASE_URL + movie.movie_link)
+    movie_page = @scraper.get(BASE_URL + movie.movie_link)
     full_cast_page = movie_page.link_with(text: 'See full cast').click
     cast_member_count = 0
     cast_list = full_cast_page.search('td.itemprop')
@@ -91,14 +91,14 @@ class IMDB_Scraper
       cast_member_name = cast_member_link.text
       cast_member_dob = get_cast_member_dob(BASE_URL + cast_member_link.attributes['href'].value)
 
-      if(cast_member_dob != false)
+      if cast_member_dob
         date_of_birth = DateTime.new(cast_member_dob[2].to_i, cast_member_dob[0].to_i, cast_member_dob[1].to_i)
         cast_member = Cast_Member.new(cast_member_name, cast_member_link, date_of_birth)
         movie.cast_list << cast_member
       end
     end
     progress_bar.increment
-    return movie
+    movie
   end
 
   # goes to cast member's bio page and returns cast member's dob
@@ -108,7 +108,7 @@ class IMDB_Scraper
   def get_cast_member_dob(url)
     begin
       # gets date of birth container
-      cast_member_page = scraper.get(url)
+      cast_member_page = @scraper.get(url)
       birthday_container = cast_member_page.search('#name-born-info')
 
       # formats the date of birth in 'mm d yyyy'
