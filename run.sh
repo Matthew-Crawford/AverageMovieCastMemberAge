@@ -1,3 +1,5 @@
+#!/bin/sh
+
 echo "Installing Required Gems"
 gem install mechanize
 gem install ruby-progressbar

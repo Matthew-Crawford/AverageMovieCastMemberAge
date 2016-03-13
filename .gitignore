@@ -1,0 +1,3 @@
+# ignores vim .swp files
+*.swp
+.idea
