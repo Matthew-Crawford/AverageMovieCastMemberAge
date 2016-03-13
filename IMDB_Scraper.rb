@@ -60,7 +60,8 @@ class IMDB_Scraper
                     :total      => movies.count)
 
     movies.each do |movie|
-      movie_list_threads << Thread.new {get_cast_list(movie, progress_bar)}
+      movie = get_meta_critic_scores(movie)
+      movie_list_threads << Thread.new { get_cast_list(movie, progress_bar) }
     end
 
     movie_list_threads.each do |thread|
@@ -128,5 +129,13 @@ class IMDB_Scraper
     rescue NoMethodError
       return false
     end
+  end
+
+  def get_meta_critic_scores(movie)
+    movie_page = @scraper.get(BASE_URL + movie.movie_link)
+    score_container = movie_page.search('.metacriticScore')
+    score = score_container.at('span').text.strip
+    movie.score = score
+    movie
   end
 end
