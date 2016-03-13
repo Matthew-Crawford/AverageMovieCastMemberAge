@@ -67,36 +67,40 @@ class IMDB_Scraper
       thread.join 
     end
 
-    movie_list_threads
+    movie_list_threads.map { |thread| thread.value}
   end 
 
   # gets the cast members and their date of birth's for each movie
   # @param movie: the cast members' movie
   # @return: the movie with the full cast member list
   def get_cast_list(movie, progress_bar)
-    max_cast_members = 50
-    movie_page = @scraper.get(BASE_URL + movie.movie_link)
-    full_cast_page = movie_page.link_with(text: 'See full cast').click
-    cast_member_count = 0
-    cast_list = full_cast_page.search('td.itemprop')
+      max_cast_members = 50
+      movie_page = @scraper.get(BASE_URL + movie.movie_link)
+      full_cast_page = movie_page.link_with(text: 'See full cast').click
+      cast_member_count = 0
+      cast_list = full_cast_page.search('td.itemprop')
 
-    cast_list.each do |cast_member_section|
-      # stops after max_cast_members pages have been visited
-      cast_member_count += 1
-      if cast_member_count > max_cast_members
-        break
+      cast_list.each do |cast_member_section|
+        begin
+        # stops after max_cast_members pages have been visited
+        cast_member_count += 1
+        if cast_member_count > max_cast_members
+          break
+        end
+
+        cast_member_link = cast_member_section.css('a')[0]
+        cast_member_name = cast_member_link.text
+        cast_member_dob = get_cast_member_dob(BASE_URL + cast_member_link.attributes['href'].value)
+
+        if cast_member_dob
+          date_of_birth = DateTime.new(cast_member_dob[2].to_i, cast_member_dob[0].to_i, cast_member_dob[1].to_i)
+          cast_member = Cast_Member.new(cast_member_name, cast_member_link, date_of_birth)
+          movie.cast_list << cast_member
+        end
+        rescue ArgumentError
+          next
+        end
       end
-
-      cast_member_link = cast_member_section.css('a')[0]
-      cast_member_name = cast_member_link.text
-      cast_member_dob = get_cast_member_dob(BASE_URL + cast_member_link.attributes['href'].value)
-
-      if cast_member_dob
-        date_of_birth = DateTime.new(cast_member_dob[2].to_i, cast_member_dob[0].to_i, cast_member_dob[1].to_i)
-        cast_member = Cast_Member.new(cast_member_name, cast_member_link, date_of_birth)
-        movie.cast_list << cast_member
-      end
-    end
     progress_bar.increment
     movie
   end
@@ -113,20 +117,15 @@ class IMDB_Scraper
 
       # formats the date of birth in 'mm d yyyy'
       birthday = birthday_container.at('time').text.strip
-      birthday = birthday.gsub(/\r/, "")
-      birthday = birthday.gsub(/\n/, "")
-      birthday = birthday.split(" ")
+      birthday = birthday.gsub(/\r/, '')
+      birthday = birthday.gsub(/\n/, '')
+      birthday = birthday.split(' ')
       birthday[1] = birthday[1].gsub(',', '')
-      birthday[0] = Date::MONTHNAMES.index(birthday[0]) 
-
-      test_dob = DateTime.new(birthday[2].to_i, birthday[0].to_i, birthday[1].to_i)
+      birthday[0] = Date::MONTHNAMES.index(birthday[0])
 
       return birthday
 
-    # catches if there is no date of birth for a given actor
     rescue NoMethodError
-      return false
-    rescue ArgumentError
       return false
     end
   end
