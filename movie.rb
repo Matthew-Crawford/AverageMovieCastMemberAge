@@ -31,8 +31,4 @@ class Movie
     end
   end
 
-  # displays the average age
-  def display_average_age
-    puts "Title: #{title} Average Age: #{calculate_average_age}"
-  end
 end
