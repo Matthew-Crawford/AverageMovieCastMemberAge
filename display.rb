@@ -19,7 +19,7 @@ class Display
 		puts
 
 		header :title => "Average Age of the Cast Members of Movies Currently in Theaters",
-			 :width => 100, :bold => true
+           :width => 100, :bold => true
 
 		table(:border => true) do
 			sum_age = 0

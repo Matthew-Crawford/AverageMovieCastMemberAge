@@ -27,7 +27,7 @@ class Cast_Member
 		if now.yday < date_of_birth.yday
 			age -= 1
 		end
-		return age
+		age
 	end	
 
 	def display_age(expected_age)
@@ -38,7 +38,7 @@ end
 # simple unit test to test correct age
 def test_calculate_age
 
-	matthew_birth = DateTime.new(1994,12,15)
+  matthew_birth = DateTime.new(1994,12,15)
 	cast_member = Cast_Member.new("Matthew", "", matthew_birth)
 	cast_member.calculate_age
 	cast_member.display_age(20)

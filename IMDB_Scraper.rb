@@ -21,7 +21,7 @@ class IMDB_Scraper
 
 	def initialize(scraper = Mechanize.new)
 
-		@scraper = scraper
+    @scraper = scraper
 
 		# sleeps for .4 seconds every time the scraper performs an action
 		 @scraper.history_added = Proc.new { sleep 0.4 }

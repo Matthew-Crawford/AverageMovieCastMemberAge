@@ -25,9 +25,9 @@ class Movie
 			sum += cast_member.calculate_age
 		end
 		if cast_list.count != 0
-			return sum/cast_list.count
+			sum/cast_list.count
 		else
-			return false
+			false
 		end
 	end
 
