@@ -1,4 +1,4 @@
-# AverageCurrentMovieCastMemberAge
+# AverageMovieCastMemberAge
 Lists the movies showing in theaters and calculates the average age of the cast for each movie.
 
 ## Design Rationale
