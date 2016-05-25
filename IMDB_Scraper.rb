@@ -131,11 +131,19 @@ class IMDB_Scraper
     end
   end
 
+  # gets metacritc score for each movie
+  # @param movie: the movie the score will be stored in
+  # @return: the movie
   def get_meta_critic_scores(movie)
-    movie_page = @scraper.get(BASE_URL + movie.movie_link)
-    score_container = movie_page.search('.metacriticScore')
-    score = score_container.at('span').text.strip
-    movie.score = score
-    movie
+    begin
+      movie_page = @scraper.get(BASE_URL + movie.movie_link)
+      score_container = movie_page.search('.metacriticScore')
+      score = score_container.at('span').text.strip
+      movie.score = score
+      movie
+    rescue NoMethodError
+      movie.score = "No Score Available"
+      movie
+    end
   end
 end
