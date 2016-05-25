@@ -27,15 +27,14 @@ class Display
       count = 0
       row  do
         column 'Title',       :width => 40, :align => 'center'
-        column 'Average Age', :width => 25, :padding => 5
-        column 'Metascore',   :width => 25, :padding => 5
+        column 'Average Age', :width => 25, :padding => 2
+        column 'Metascore',   :width => 30, :padding => 2
       end
 
       movies.each do |movie|
         movie.average_age = movie.calculate_average_age
 
-        # skips the movie if the minimum cast_member number is
-        # not met
+        # skips the movie if the minimum cast_member number is not met
         if movie.cast_list.count < min_cast_member_number
           next
         end
