@@ -24,7 +24,8 @@ class Display
     table(:border => true) do
       sum_age = 0
       sum_rating = 0
-      count = 0
+      movie_count = 0
+      rating_count = 0
       row  do
         column 'Title',       :width => 40, :align => 'center'
         column 'Average Age', :width => 25, :padding => 2
@@ -44,12 +45,24 @@ class Display
           column movie.score
         end
         sum_age += movie.average_age
+        movie_count += 1
+
+        puts movie.score.class
+        puts movie.score.length
+        puts movie.score
+        puts
+
+        # if there is no score available
+        if (movie.score.length > 3)
+          next
+        end
+
+        rating_count += 1
         sum_rating += movie.score.to_i
-        count += 1
       end 
 
-      average_age_all_movies = sum_age/count
-      average_score = sum_rating/count
+      average_age_all_movies = sum_age/movie_count
+      average_score = sum_rating/rating_count
       row do
         column 'Average Age and Score of All Movies'
         column average_age_all_movies
